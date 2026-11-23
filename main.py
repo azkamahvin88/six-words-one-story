@@ -9,6 +9,11 @@ A marriage told as a purchase: she kept the proof of purchase,
 and when it did not work out, she took the husband back.
 The twist lands in the second sentence; the why is left unsaid.
 
+Revision: after writing the entry, the file is read back and asserted
+to match STORY byte for byte, so a truncated or altered write can
+never pass silently. The run then prints the word count and the
+output path as confirmation.
+
 Deterministic: no network, no randomness, no clock, no environment input.
 """
 
@@ -29,6 +34,11 @@ def main() -> None:
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write(STORY)
+    # Read-back verification: the file on disk must equal STORY exactly.
+    with open(OUTPUT_PATH, "r", encoding="utf-8") as f:
+        written = f.read()
+    assert written == STORY, "read-back mismatch: entry.txt does not equal STORY"
+    print(f"wrote {len(words)} words to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
